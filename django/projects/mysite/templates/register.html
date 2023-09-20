@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">TodoApp</a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% if nickname == "" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="login">로그인</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="register">회원가입</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="lists">리스트</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logout">로그아웃</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Rest -->
+<title>회원가입</title>
+
+<div class="container my-3">
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+          {{ error }}
+        </div>
+        <br>
+    {% endif %}
+
+    <h1>회원 가입</h1><br>
+
+    <form method="post" action="{% url 'register' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="nickname">닉네임</label>
+            <input type="text" class="form-control" name="nickname" id="nickname"
+                   value="{{ form.nickname.value|default_if_none:'' }}" maxlength="20">
+        </div>
+        <div class="mb-3">
+            <label for="password1">비밀번호</label>
+            <input type="password" class="form-control" name="password1" id="password1"
+                   value="{{ form.password1.value|default_if_none:'' }}" maxlength="50">
+        </div>
+        <div class="mb-3">
+            <label for="password2">비밀번호 확인</label>
+            <input type="password" class="form-control" name="password2" id="password2"
+                   value="{{ form.password2.value|default_if_none:'' }}" maxlength="50">
+        </div>
+        <button type="submit" class="btn btn-primary">가입</button>
+    </form>
+</div>
+{% endblock %}

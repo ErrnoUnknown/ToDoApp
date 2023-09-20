@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">TodoApp</a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% if nickname == "" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="login">로그인</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="register">회원가입</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="lists">리스트</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logout">로그아웃</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Rest -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>로그인</title>
+
+<div class="container my-3">
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+          {{ error }}
+        </div>
+        <br>
+    {% endif %}
+
+    <h1>로그인</h1><br>
+
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="nickname">닉네임</label>
+            <input type="text" class="form-control" name="nickname" id="nickname"
+                   value="{{ form.nickname.value|default_if_none:'' }}" maxlength="20">
+        </div>
+        <div class="mb-3">
+            <label for="password">비밀번호</label>
+            <input type="password" class="form-control" name="password" id="password"
+                   value="{{ form.password.value|default_if_none:'' }}" maxlength="50">
+        </div>
+        <button type="submit" class="btn btn-primary">로그인</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">TodoApp</a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% if nickname == "" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="login">로그인</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="register">회원가입</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="lists">리스트</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logout">로그아웃</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Rest -->
+<meta charset="UTF-8">
+<title>리스트</title>
+
+<br>
+
+<!-- Rest -->
+<div class="container-lg">
+    <h1>{{ nickname }}님의 리스트</h1><br>
+</div>
+
+<!-- 할 일 등록 -->
+<div class="container-lg">
+    <h3>할 일 등록</h3><br>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+          {{ error }}
+        </div>
+        <br>
+    {% endif %}
+
+    <form method="post" action="{% url 'lists' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="subject">제목</label>
+            <input type="text" class="form-control" name="subject" id="subject"
+                   value="{{ form.subject.value|default_if_none:'' }}" maxlength="25">
+        </div>
+        <div class="mb-3">
+            <div class="form-group">
+                <label for="contents">내용</label>
+                <textarea class="form-control" name="contents" id="contents" rows="5" maxlength="500">{{ form.contents.value|default_if_none:'' }}</textarea>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">등록</button>
+    </form>
+</div>
+
+<!-- 나의 할 일 -->
+{% if lists %}
+    <br>
+    <div class="container-lg">
+        <h3>나의 할 일</h3><br>
+
+        {% for list in lists %}
+            <div class="row align-items-start">
+                <!-- 체크 -->
+                <div class="col-1">
+                    <div class="form-check form-switch">
+                        {% if list.is_completed %}
+                            <input class="form-check-input" type="checkbox" role="switch" checked>
+                        {% else %}
+                            <input class="form-check-input" type="checkbox" role="switch">
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- 제목 -->
+                <div class="col-3">
+                    {% if list.is_completed %}
+                    <div class="badge bg-success text-wrap" style="width: 15rem;">
+                        {{ list.subject }}
+                    </div>
+                    {% else %}
+                    <div class="badge bg-danger text-wrap" style="width: 15rem;">
+                        {{ list.subject }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- 내용 -->
+                <div class="col-6">
+                    <p class="fw-normal">{{ list.contents }}</p>
+                </div>
+
+                <!-- 생성 일시 -->
+                <div class="col">
+                    <div class="badge bg-secondary text-wrap" style="width: 10rem;">
+                        {{ list.create_date }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+
+
+{% endblock %}
